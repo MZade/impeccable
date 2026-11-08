@@ -1,9 +1,9 @@
 ---
 name: impeccable
-description: "Use to design, redesign, critique, audit, polish or animate a frontend: websites, landing pages, dashboards, app UI, components, native iOS/Android screens, or a design system (DESIGN.md)."
-version: 4.8.1
+description: "Use to design, redesign, critique, audit, polish or animate a frontend: websites, landing pages, dashboards, app UI, components, native iOS/Android screens, or a design system (DESIGN.md). Network-free build: no engine, no hooks, nothing sent outside."
+version: 4.8.1-offline
 user-invocable: true
-argument-hint: "[shape · audit|critique · animate|bolder|colorize|delight|layout|overdrive|quieter|typeset · adapt|clarify|distill · harden|onboard|optimize|polish · init|document|extract|live|generate] [target]"
+argument-hint: "[shape · audit|critique · animate|bolder|colorize|delight|layout|overdrive|quieter|typeset · adapt|clarify|distill · harden|onboard|optimize|polish · init|document|extract] [target]"
 license: Apache 2.0
 ---
 
@@ -14,13 +14,20 @@ Core principles:
 - Scale ambition to the surface's mode (see Modes). Persuade and Experience get full commitment: bold, distinct work with a point of view. On Operate and Read, ambition shows as precision and restraint, and patterns the visitor already knows earn their place.
 - Verify by looking at the rendered result at the sizes it ships at, and batch the checks: fix what one look shows before looking again, rather than screenshotting after every tweak.
 
+## Network-free build
+
+This copy is a network-free fork of Impeccable. It ships without the engine binary, its launcher and its hooks, so nothing about the user's work leaves this machine. These rules override anything below and in the reference files:
+
+- **No engine.** There is no `scripts/impeccable` launcher. When this skill or a reference tells you to run `"<skill-base-dir>/scripts/impeccable" <verb>` (context, detect, critique-storage, live-server, pin, hooks, doctor or any other), do not run it and do not look for, install or download a replacement. Do that step by hand: read PRODUCT.md, DESIGN.md and the relevant source files yourself, and judge the rendered result from screenshots. Skip steps that only feed the engine (critique storage and trends, live server, concept rolls) and every live-mode step, parameter contract or setup a reference mentions. Say once, at the start, that the automatic detector is not part of this build.
+- **No outbound data.** Never send anything about the user's project or activity to the internet for this skill: no WebFetch or WebSearch, curl, npx, npm install, CDN or font-service lookups, telemetry, or image-generation APIs, even when a reference suggests it. Open only the user's own app: a local dev server or an environment the user names.
+- **No hooks.** Never install, enable or repair hooks, and never write Claude Code or other agent settings files.
+- **Reviews write nothing to the repository.** For critique and audit, deliver findings in the conversation or a file outside the repository. Create PRODUCT.md, DESIGN.md or `.impeccable/` only when the user asks.
+
 ## Setup
 
-1. Run `"${CLAUDE_SKILL_DIR}/scripts/impeccable" context` once per session, where `${CLAUDE_SKILL_DIR}` is the directory that contains this SKILL.md (the skill folder, not a plugin root two levels above it); keep cwd at the user's project. Every `"${CLAUDE_SKILL_DIR}/scripts/impeccable" <verb>` command in this skill and its references resolves against that base directory. In reference files, replace the skill-base-dir placeholder with this directory before running commands; it is not a shell variable. On a Windows shell without `sh`, call `& "${CLAUDE_SKILL_DIR}/scripts/impeccable.cmd"` instead. The launcher runs a self-contained binary that ships next to it or is downloaded once on first run; no Node or other runtime is required. Pass a named source file or route as `--target <path>`. It loads PRODUCT.md, DESIGN.md, the matching surface brief, and native-platform guidance when applicable; follow its directives and do not rerun it.
+1. Read the project's existing PRODUCT.md, DESIGN.md and the matching surface brief, if they exist, without inventing missing context. Keep cwd at the user's project.
 2. Load the request's playbook: its Commands-table reference for an explicit/implied sub-command, or [reference/new-work.md](reference/new-work.md) for a new surface or replacement visual world. Inspect target and incumbent visual truth before editing. When the app cannot run, start with committed visual-regression goldens or screenshot fixtures; verify target and freshness against current tokens, CSS, components, or assets, resolve conflicts, and compare theme/variant captures.
 3. After resolving analysis and direction, read [reference/craft-floor.md](reference/craft-floor.md) immediately before any UI edit, including small refinements. It carries the quality floor, the absolute bans, and the reflexes no detector catches. Do not load it for planning-only work.
-
-**Launcher unavailable:** On refusal or failure, send a separate message **before the next tool call**: “Context loading did not run; I’ll read the existing project context directly.” Then read existing PRODUCT.md and DESIGN.md without inventing missing context, follow applicable steps 2–3, including reading [reference/craft-floor.md](reference/craft-floor.md) immediately before any UI edit, and continue through permitted tools. This applies to planning and editing; launcher failure alone does not block either.
 
 ## How to design
 
@@ -66,23 +73,14 @@ Choose the mode from the requested surface, not the product, and persist it only
 | `clarify [target]` | Fix | Improve UX copy, labels, and error messages | [reference/clarify.md](reference/clarify.md) |
 | `adapt [target]` | Fix | Adapt for different devices and screen sizes | [reference/adapt.md](reference/adapt.md) · native: [reference/adapt.native.md](reference/adapt.native.md) |
 | `optimize [target]` | Fix | Diagnose and fix UI performance | [reference/optimize.md](reference/optimize.md) |
-| `live` | Iterate | Visual variant mode: pick elements in the browser, iterate on alternatives | [reference/live.md](reference/live.md) |
-| `generate [n] [action] [element]` | Iterate | Variants, versions, or alternatives of a named element to choose from in the live browser; no manual picking | [reference/generate.md](reference/generate.md) |
 
 Routing:
 
 - **No argument:** read [routing.md](reference/routing.md) and present its context-aware menu; never auto-run a command.
 - **Explicit or clearly implied request to run a command:** load its reference (native variant on native platforms) and follow it. Ask once if two commands fit.
 - **Workflow or command-selection question:** read [Workflow questions](reference/routing.md#workflow-questions).
-- **Otherwise:** treat the request as general design work. Missing PRODUCT.md routes a new surface or replacement world through init, then new-work; a narrow refinement of existing code proceeds on the incumbent implementation as `impeccable context` directs, offering init afterward rather than blocking on it.
+- **Otherwise:** treat the request as general design work. Missing PRODUCT.md routes a new surface or replacement world through init, then new-work; a narrow refinement of existing code proceeds on the incumbent implementation, offering init afterward rather than blocking on it.
+- `live`, `generate`, `hooks`, `doctor` and `pin` are not part of this build: say so and offer the closest command that works without the engine.
 - `teach` aliases `init`. `craft` is a deprecated alias for ordinary new-work and adds nothing. `shape` owns task discovery, then enters new-work only for visual-world and surface-concept decisions.
 
-After init writes PRODUCT.md, resume without rerunning `impeccable context`; init loads the native platform reference itself when the platform it recorded is `ios`, `android`, or `adaptive`.
-
-**Pin / Unpin:** `"${CLAUDE_SKILL_DIR}/scripts/impeccable" pin <pin|unpin> <command>` creates or removes a standalone `/<command>` shortcut. Report the script's result concisely; relay stderr verbatim on error.
-
-**Hooks:** `/impeccable hooks <on|off|status|ignore-rule|ignore-file|ignore-value|reset>` manages the design detector hook for this project (auto-runs the detector after UI file edits and surfaces findings). Load [reference/hooks.md](reference/hooks.md) when the user invokes it with any argument.
-
-**Doctor:** `/impeccable doctor` reports and repairs drift between this project's Impeccable artifacts (PRODUCT.md, DESIGN.md and its sidecar, config, surface briefs, the hook) and what this version reads. Load [reference/doctor.md](reference/doctor.md) when the user invokes it, or when they ask what is out of date, stale, or needs refreshing. A `CONTEXT_STALE` directive in Setup's output is the cheap subset of the same report; act on it there per its own instructions rather than running doctor unasked.
-
-**Never repair drift as a side effect of a design task.** A `CONTEXT_STALE` finding is reported, not acted on, unless the user asks. The one exception is a finding marked `auto`, which the next write to that file performs anyway.
+After init writes PRODUCT.md, resume; init loads the native platform reference itself when the platform it recorded is `ios`, `android`, or `adaptive`.

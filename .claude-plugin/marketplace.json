@@ -1,18 +1,17 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "impeccable",
+  "name": "impeccable-offline",
   "metadata": {
-    "description": "Design fluency for AI harnesses. 1 skill, 24 commands, and curated anti-patterns for impeccable frontend design."
+    "description": "Network-free fork of Impeccable: the design skill without engine, hooks or telemetry. Nothing is sent outside."
   },
   "owner": {
-    "name": "Paul Bakaus",
-    "email": "paul@paulbakaus.com"
+    "name": "MZade"
   },
   "plugins": [
     {
       "name": "impeccable",
-      "description": "Design fluency for frontend development. 1 skill with 24 commands (/impeccable polish, /impeccable audit, /impeccable critique, etc.) and curated anti-pattern detection.",
-      "version": "4.8.1",
+      "description": "Network-free Impeccable design skill (audit, critique, polish, ...). No engine, no hooks, no telemetry.",
+      "version": "4.8.1-offline",
       "author": {
         "name": "Paul Bakaus",
         "email": "paul@paulbakaus.com"
